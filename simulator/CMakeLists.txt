@@ -1,0 +1,27 @@
+add_library(dsu INTERFACE DSU.hpp)
+target_include_directories(dsu INTERFACE ${PROJECT_SOURCE_DIR})
+
+add_library(LogicalQubit LogicalQubit.cpp)
+
+add_library(Gate Gate.cpp)
+
+add_library(BaseStarArchitecture BaseStarArchitecture.cpp)
+target_link_libraries(BaseStarArchitecture LogicalQubit Gate)
+
+add_library(StaticStarArchitecture StaticStarArchitecture.cpp)
+target_link_libraries(StaticStarArchitecture BaseStarArchitecture)
+
+add_library(AutoBraidStarArchitecture AutoBraidStarArchitecture.cpp)
+target_link_libraries(AutoBraidStarArchitecture BaseStarArchitecture)
+
+add_library(DynamicStarArchitecture DynamicStarArchitecture.cpp)
+target_link_libraries(DynamicStarArchitecture BaseStarArchitecture dsu)
+
+add_library(StarArchitecture INTERFACE StarArchitecture.hpp)
+target_include_directories(StarArchitecture INTERFACE ${PROJECT_SOURCE_DIR})
+target_link_libraries(StarArchitecture INTERFACE BaseStarArchitecture StaticStarArchitecture AutoBraidStarArchitecture DynamicStarArchitecture)
+
+add_library(Config Config.cpp)
+
+add_library(main main.cpp)
+target_link_libraries(main Config StarArchitecture)

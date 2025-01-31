@@ -71,7 +71,7 @@ int main(int argc, char **argv)
     double physicalQubitErrorRate = config.get_double("physical_qubit_error_rate");
     bool debug = config.get_int("debug");
     unsigned int numberOfRuns = config.get_int("number_of_runs", 100);
-    auto compiler = config.get_string("compiler", "dynamic");
+    auto scheduler = config.get_string("scheduler", "rescq");
     double compressionFactor = config.get_double("compression_factor", 0);
     double mstComputationFrequency = config.get_double("mst_computation_frequency", 100);
 
@@ -109,15 +109,15 @@ int main(int argc, char **argv)
         for (unsigned int seed = 0; seed < numberOfRuns; seed++)
         {
             BaseStarArchitecture *starArchitecture = nullptr;
-            if (compiler == "static")
+            if (scheduler == "static")
                 starArchitecture = new StaticStarArchitecture(numQubitsPerRow * 2, numQubitsPerColumn * 2, numQubits, codeDistance, physicalQubitErrorRate, rotationErrorModel, seed, compressionFactor);
-            else if (compiler == "dynamic")
+            else if (scheduler == "rescq")
                 starArchitecture = new DynamicStarArchitecture(numQubitsPerRow * 2, numQubitsPerColumn * 2, numQubits, codeDistance, physicalQubitErrorRate, rotationErrorModel, seed, mstComputationFrequency, compressionFactor);
-            else if (compiler == "autobraid")
+            else if (scheduler == "autobraid")
                 starArchitecture = new AutoBraidStarArchitecture(numQubitsPerRow * 2, numQubitsPerColumn * 2, numQubits, codeDistance, physicalQubitErrorRate, rotationErrorModel, seed, compressionFactor);
             else
             {
-                std::cout << "Invalid compiler: " << compiler << '\n';
+                std::cout << "Invalid scheduler: " << scheduler << '\n';
                 return 1;
             }
             starArchitecture->addGates(gates);

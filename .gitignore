@@ -1,7 +1,9 @@
+.cache/
 .vscode/
-**/*.o
-sim
 .DS_Store
 config/*
 !config/*.cfg
+!config/*.sh
 outputs
+.clang-format
+build/
