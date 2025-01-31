@@ -22,6 +22,9 @@ if [ ! -f "../scripts/gen_configs.sh" ]; then
 fi
 ../scripts/gen_configs.sh 0
 ../scripts/gen_configs.sh 50 dp
+../scripts/gen_configs.sh 25 dpf
+../scripts/gen_configs.sh 75 dpf
+../scripts/gen_configs.sh 100 dpf
 echo "Generated configs"
 
 cd ".."

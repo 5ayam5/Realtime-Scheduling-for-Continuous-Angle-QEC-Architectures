@@ -5,6 +5,7 @@ project(RESCQSimulator)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_BUILD_TYPE Release)
 
 add_compile_options(-Wall -Wextra -pedantic -Ofast -g)
 

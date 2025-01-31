@@ -55,6 +55,13 @@ To generate the logs that are used to generate the plots used in the paper, simp
 > [!IMPORTANT]
 > The above script takes about an hour on 16 cores and the logs generated requires about 1-2 GB of disk space.
 
+The generated logs can now be used to generate the plots by running the following:
+```bash
+python postprocess/final.py outputs plots
+python postprocess/histograms.py outputs plots
+python postprocess/sensitivity.py outputs plots
+```
+
 ## Configuration File
 The configuration file is used to pass the parameters to the simulator. The configuration file has the following format:
 ```

@@ -45,7 +45,7 @@ process() {
         cat "$name"'.cfg' | sed '/compression_factor/s/=.*/= '"$compression_frac"'/' | sed '/physical_qubit_error_rate/s/=.*/= '"$prob"'/' | sed '/code_distance/s/=.*/= '"$d"'/' | sed '/output_dir/s/\/.*"/\/'"$compression"'\/'"$variant"'"/' > "configs/""$compression"'_'"$name"'/'"$variant"'.cfg'
       fi
     done
-  else
+  elif [ "$#" -eq 5 ]; then
     p=$4
     prob=$(echo "scale=6; 10^-$p" | bc)
     d=$5
@@ -58,6 +58,21 @@ process() {
       variant="$name"'_'"$p"'_'"$d"
       cat "$name"'.cfg' | sed '/compression_factor/s/=.*/= '"$compression_frac"'/' | sed '/physical_qubit_error_rate/s/=.*/= '"$prob"'/' | sed '/code_distance/s/=.*/= '"$d"'/' | sed '/output_dir/s/\/.*"/\/'"$compression"'\/'"$variant"'"/' > "configs/""$compression"'_'"$name"'/'"$variant"'.cfg'
     fi
+  elif [ "$#" -eq 6 ]; then
+    p=$4
+    prob=$(echo "scale=6; 10^-$p" | bc)
+    d=$5
+    freq=$6
+    if [ "$scheduler" = "rescq" ]; then
+      variant="$name"'_'"$p"'_'"$d"'_'"$freq"
+      cat "$name"'.cfg' | sed '/compression_factor/s/=.*/= '"$compression_frac"'/' | sed '/physical_qubit_error_rate/s/=.*/= '"$prob"'/' | sed '/code_distance/s/=.*/= '"$d"'/' | sed '/mst_computation_frequency/s/=.*/= '"$freq"'.0/' | sed '/output_dir/s/\/.*"/\/'"$compression"'\/'"$variant"'"/' > "configs/""$compression"'_'"$name"'/'"$variant"'.cfg'
+    else
+      variant="$name"'_'"$p"'_'"$d"
+      cat "$name"'.cfg' | sed '/compression_factor/s/=.*/= '"$compression_frac"'/' | sed '/physical_qubit_error_rate/s/=.*/= '"$prob"'/' | sed '/code_distance/s/=.*/= '"$d"'/' | sed '/output_dir/s/\/.*"/\/'"$compression"'\/'"$variant"'"/' > "configs/""$compression"'_'"$name"'/'"$variant"'.cfg'
+    fi
+  else
+    echo "Error: Invalid number of arguments"
+    return 1
   fi
 
   return 0
@@ -77,6 +92,7 @@ if [ "$#" -ne 3 ] && [ "$#" -ne 2 ] && [ "$#" -ne 1 ]; then
   echo "Usage: $0 <compression>"
   echo "Usage: $0 all"
   echo "Usage: $0 <compression> dp"
+  echo "Usage: $0 <compression> dpf"
   exit 1
 fi
 
@@ -92,11 +108,23 @@ elif [ "$#" -eq 1 ]; then
     single_compression "$compression"
   fi
 else
-  compression=$1
-  for benchmark in "large" "medium" "supermarq"; do
-    for scheduler in "static" "rescq" "autobraid"; do
-      process "$compression" "$benchmark" "$scheduler" 4 7
+  if [ "$2" = "dp" ]; then
+    compression=$1
+    for benchmark in "large" "medium" "supermarq"; do
+      for scheduler in "static" "rescq" "autobraid"; do
+        process "$compression" "$benchmark" "$scheduler" 4 7
+      done
     done
-  done
+  elif [ "$2" = "dpf" ]; then
+    compression=$1
+    for benchmark in "large" "medium" "supermarq"; do
+      for scheduler in "static" "rescq" "autobraid"; do
+        process "$compression" "$benchmark" "$scheduler" 4 7 25
+      done
+    done
+  else
+    echo "Error: Invalid argument"
+    exit 1
+  fi
 fi
 
